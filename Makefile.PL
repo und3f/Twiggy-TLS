@@ -8,5 +8,8 @@ requires 'IO::Socket::SSL' => '1.56';
 
 test_requires 'Test::More' => '0.88';
 test_requires 'Test::TCP';
+test_requires 'LWP::UserAgent';
+test_requires 'LWP::Protocol::https';
+test_requires 'File::Temp';
 
 WriteAll;
