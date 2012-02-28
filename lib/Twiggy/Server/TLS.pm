@@ -17,10 +17,10 @@ sub new {
 
     my $self = $class->SUPER::new(@_);
 
-    Carp::croak 'ssl_key_file required'
+    Carp::croak 'ssl_key required'
       unless exists $self->{ssl_key};
 
-    Carp::croak 'ssl_cert_file required'
+    Carp::croak 'ssl_cert required'
       unless exists $self->{ssl_cert};
 
     if (my $verify = $self->{ssl_verify}) {
