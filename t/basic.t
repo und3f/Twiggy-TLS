@@ -13,7 +13,7 @@ my $ca_cert    = "$Bin/ca.pem";
 my $server_pem = "$Bin/server.pem";
 
 subtest 'tls connection' => sub {
-    my $success;
+    my ($success, $content) = @_;
 
     test_tcp(
         client => sub {
@@ -27,6 +27,7 @@ subtest 'tls connection' => sub {
                 ssl_opts => {verify_hostname => 1, SSL_ca_file => $ca_cert});
             my $res = $ua->get("https://localhost:$port");
             $success = $res->is_success or die $res->status_line;
+            $content = $res->decoded_content;
         },
         server => sub {
             my $port   = shift;
@@ -40,13 +41,18 @@ subtest 'tls connection' => sub {
 
             $server->run(
                 sub {
-                    return [200, ['Content-Type' => 'text/plain'], ['hello']];
-                }
-            );
-        }
-    );
+                    my $env = shift;
+
+                    return [
+                        200,
+                        ['Content-Type' => 'text/plain'],
+                        [$env->{"psgi.url_scheme"}]
+                    ];
+                });
+            });
 
     ok $success, "https connection success";
+    is $content, "https", "returned content is right";
 };
 
 done_testing;

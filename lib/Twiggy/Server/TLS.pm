@@ -56,7 +56,7 @@ sub _accept_handler {
                 DEBUG && warn "$sock TLS/SSL error: $error\n";
             },
 
-            SSL_key_file => $self->{ssl_key},
+            SSL_key_file  => $self->{ssl_key},
             SSL_cert_file => $self->{ssl_cert},
         );
 
@@ -72,6 +72,14 @@ sub _accept_handler {
         );
 
       }
+}
+
+sub _run_app {
+    my ($self, $app, $env, $sock) = @_;
+
+    $env->{'psgi.url_scheme'} = 'https';
+
+    $self->SUPER::_run_app($app, $env, $sock);
 }
 
 sub _setup_tls {
