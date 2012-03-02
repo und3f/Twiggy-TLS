@@ -46,9 +46,9 @@ sub new {
 }
 
 sub _accept_handler {
-    my ($self, $app, $is_tcp) = @_;
+    my $self = shift;
 
-    my $super = $self->SUPER::_accept_handler($app, $is_tcp);
+    my $super = $self->SUPER::_accept_handler(@_);
 
     return sub {
         my ($sock, $peer_host, $peer_port) = @_;
