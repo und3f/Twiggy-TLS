@@ -28,7 +28,6 @@ subtest 'tls connection' => sub {
                     verify_hostname => 1,
                     SSL_ca_file     => $ca_cert,
 
-                    SSL_use_cert => 1,
                     SSL_key_file    => $client_pem,
                     SSL_cert_file => $client_pem,
                 }
