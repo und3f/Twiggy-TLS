@@ -1,9 +1,10 @@
 use inc::Module::Install;
 
-name 'Twiggy-Server-TLS';
+name 'Twiggy-TLS';
 all_from 'lib/Twiggy/TLS.pm';
 
 requires 'Twiggy' => '0.1010';
+requires 'Plack'  => '0.99';
 requires 'IO::Socket::SSL' => '1.56';
 
 test_requires 'Test::More' => '0.88';
