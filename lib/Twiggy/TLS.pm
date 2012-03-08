@@ -11,7 +11,7 @@ __END__
 
 =head1 NAME
 
-Twiggy::TLS - TLS support for Twiggy server
+Twiggy::TLS - Twiggy server with TLS support.
 
 =head1 SYNOPSIS
 
