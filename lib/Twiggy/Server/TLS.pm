@@ -42,6 +42,14 @@ sub new {
         $self->{_ssl_verify_mode} = $verify_mode;
     }
 
+    if (my $server_ready_orig = $self->{server_ready}) {
+        $self->{server_ready} = sub {
+            my $args = shift;
+            $args->{proto} = 'https';
+            $server_ready_orig->($args);
+        };
+    }
+
     $self;
 }
 
