@@ -18,14 +18,14 @@ sub new {
     my $self = $class->SUPER::new(@_);
 
     my %tls = (
-        SSL_server      => 1,
+        SSL_server => 1,
 
         SSL_version     => $self->{ssl_version} || 'tlsv1',
         SSL_cipher_list => $self->{ssl_ciphers} || 'HIGH:!aNULL:!MD5',
 
-        SSL_key_file    => $self->{ssl_key},
-        SSL_cert_file   => $self->{ssl_cert},
-        SSL_ca_file     => $self->{ssl_ca},
+        SSL_key_file  => $self->{ssl_key},
+        SSL_cert_file => $self->{ssl_cert},
+        SSL_ca_file   => $self->{ssl_ca},
     );
 
     if (my $verify = $self->{ssl_verify}) {
@@ -44,7 +44,7 @@ sub new {
 
     $self->{_tls_opts} = \%tls;
 
-    IO::Socket::SSL::SSL_Context->new(%tls)
+    $self->{_tls_context} = IO::Socket::SSL::SSL_Context->new(%tls)
       or Carp::croak(
         "TLS context initialization failed: " . IO::Socket::SSL::errstr);
 
@@ -82,10 +82,13 @@ sub _accept_handler {
 
                 $self->{exit_guard}->end;
                 delete $self->{ssl_guard}->{$sock};
-                $sock->close(SSL_ctx_free => 1);
+                $sock->close;
                 DEBUG && warn "$sock TLS/SSL error: $error\n";
             },
-            %{$self->{_tls_opts}}
+            SSL_reuse_ctx => $self->{_tls_context},
+
+            # This option is not inherited from context
+            SSL_cipher_list => $self->{_tls_opts}->{SSL_cipher_list}
         );
 
         $self->_setup_tls(
@@ -105,7 +108,7 @@ sub _accept_handler {
 sub _run_app {
     my ($self, $app, $env, $sock) = @_;
 
-    $env->{'psgi.url_scheme'} = 'https';
+    $env->{'psgi.url_scheme'}         = 'https';
     $env->{'HTTP_SSL_CLIENT_S_DN_CN'} = $sock->peer_certificate('cn');
 
     $self->SUPER::_run_app($app, $env, $sock);
