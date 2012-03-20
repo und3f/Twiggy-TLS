@@ -17,7 +17,6 @@ Twiggy::TLS - Twiggy server with TLS support.
 
     plackup --server Twiggy::TLS --ssl-key key.pem --ssl-cert cert.pem
 
-
 Other possible options are C<--ssl-verify> and C<--ssl-ca>. See L</ATTRIBUTES> for
 more details.
 
@@ -41,6 +40,20 @@ Twiggy::TLS extends Twiggy with a TLS support.
 
 All files must be in PEM format. You can merge multiply entities in a one file
 (like server key and certificate).
+
+=head2 ssl_version
+
+Sets the version of the SSL protocol used to transmit data. The default is
+C<tlsv1>. Other possible values are C<sslv2>, C<sslv3> or C<sslv2/3>.
+
+=head2 ssl_ciphers
+
+This directive describes the list of cipher suites the server supports for
+establishing a secure connection. Cipher suites are specified in the OpenSSL
+cipherlist format
+L<http://www.openssl.org/docs/apps/ciphers.html#CIPHER_STRINGS>.
+
+The default is C<HIGH:!aNULL:!MD5>.
 
 =head2 ssl_key
 

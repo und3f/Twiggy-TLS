@@ -18,10 +18,14 @@ sub new {
     my $self = $class->SUPER::new(@_);
 
     my %tls = (
-        SSL_server    => 1,
-        SSL_key_file  => $self->{ssl_key},
-        SSL_cert_file => $self->{ssl_cert},
-        SSL_ca_file   => $self->{ssl_ca},
+        SSL_server      => 1,
+
+        SSL_version     => $self->{ssl_version} || 'tlsv1',
+        SSL_cipher_list => $self->{ssl_ciphers} || 'HIGH:!aNULL:!MD5',
+
+        SSL_key_file    => $self->{ssl_key},
+        SSL_cert_file   => $self->{ssl_cert},
+        SSL_ca_file     => $self->{ssl_ca},
     );
 
     if (my $verify = $self->{ssl_verify}) {
