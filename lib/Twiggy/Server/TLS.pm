@@ -17,30 +17,32 @@ sub new {
 
     my $self = $class->SUPER::new(@_);
 
-    Carp::croak 'ssl_key required'
-      unless exists $self->{ssl_key};
-
-    Carp::croak 'ssl_cert required'
-      unless exists $self->{ssl_cert};
+    my %tls = (
+        SSL_server    => 1,
+        SSL_key_file  => $self->{ssl_key},
+        SSL_cert_file => $self->{ssl_cert},
+        SSL_ca_file   => $self->{ssl_ca},
+    );
 
     if (my $verify = $self->{ssl_verify}) {
-        my $verify_mode;
-
         if ($verify eq 'off') {
-            $verify_mode = 0;
         }
         elsif ($verify eq 'on') {
-            $verify_mode = 0x03;
+            $tls{SSL_verify_mode} = 0x03;
         }
         elsif ($verify eq 'optional') {
-            $verify_mode = 0x01;
+            $tls{SSL_verify_mode} = 0x01;
         }
         else {
             Carp::croak qq(Invalid ssl_verify value "$verify");
         }
-
-        $self->{_ssl_verify_mode} = $verify_mode;
     }
+
+    $self->{_tls_opts} = \%tls;
+
+    IO::Socket::SSL::SSL_Context->new(%tls)
+      or Carp::croak(
+        "TLS context initialization failed: " . IO::Socket::SSL::errstr);
 
     if (my $server_ready_orig = $self->{server_ready}) {
         $self->{server_ready} = sub {
@@ -69,7 +71,6 @@ sub _accept_handler {
 
         my $ssl_sock = IO::Socket::SSL->start_SSL(
             $sock,
-            SSL_server         => 1,
             SSL_startHandshake => 0,
 
             SSL_error_trap => sub {
@@ -80,12 +81,7 @@ sub _accept_handler {
                 $sock->close(SSL_ctx_free => 1);
                 DEBUG && warn "$sock TLS/SSL error: $error\n";
             },
-
-            SSL_key_file  => $self->{ssl_key},
-            SSL_cert_file => $self->{ssl_cert},
-
-            SSL_ca_file   => $self->{ssl_ca},
-            SSL_verify_mode => $self->{_ssl_verify_mode},
+            %{$self->{_tls_opts}}
         );
 
         $self->_setup_tls(
