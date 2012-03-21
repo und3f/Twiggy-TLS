@@ -4,9 +4,9 @@ Twiggy::TLS - Twiggy server with TLS support.
 
 =head1 SYNOPSIS
 
-    plackup --server Twiggy::TLS --ssl-key key.pem --ssl-cert cert.pem
+    plackup --server Twiggy::TLS --tls-key key.pem --tls-cert cert.pem
 
-Other possible options are C<--ssl-verify> and C<--ssl-ca>. See L</ATTRIBUTES> for
+Other possible options are C<--tls-verify> and C<--tls-ca>. See L</ATTRIBUTES> for
 more details.
 
     use Twiggy::Server::TLS;
@@ -14,8 +14,8 @@ more details.
     my $server = Twiggy::Server::TLS->new(
         host     => $host,
         port     => $port,
-        ssl_key  => $key_filename,
-        ssl_cert => $cert_filename
+        tls_key  => $key_filename,
+        tls_cert => $cert_filename
     );
     $server->register_service($app);
 
@@ -30,12 +30,12 @@ Twiggy::TLS extends Twiggy with a TLS support.
 All files must be in PEM format. You can merge multiply entities in a one file
 (like server key and certificate).
 
-=head2 ssl_version
+=head2 tls_version
 
 Sets the version of the SSL protocol used to transmit data. The default is
-C<tlsv1>. Other possible values are C<sslv2>, C<sslv3> or C<sslv2/3>.
+C<sslv2/3>. Other possible values are C<sslv2>, C<sslv3> or C<tlsv1>.
 
-=head2 ssl_ciphers
+=head2 tls_ciphers
 
 This directive describes the list of cipher suites the server supports for
 establishing a secure connection. Cipher suites are specified in the OpenSSL
@@ -44,15 +44,15 @@ L<http://www.openssl.org/docs/apps/ciphers.html#CIPHER_STRINGS>.
 
 The default is C<HIGH:!aNULL:!MD5>.
 
-=head2 ssl_key
+=head2 tls_key
 
 Path to a file that contains server private key.
 
-=head2 ssl_cert
+=head2 tls_cert
 
 Path to a file that contains server certificate.
 
-=head2 ssl_verify
+=head2 tls_verify
 
 Controls the verification of the peer identity. Possible values are:
 
@@ -65,7 +65,7 @@ Default. Disable peer verification.
 =item C<on>
 
 Request peer certificate and verify it against CA. You can specify CA
-certificate with C<ssl_ca> option. Client's certificate C<Common Name> field
+certificate with C<tls_ca> option. Client's certificate C<Common Name> field
 stored in C<$env-E<gt>{HTTP_SSL_CLIENT_S_DN_CN}>.
 
 =item C<optional>
@@ -74,7 +74,7 @@ Same as C<on>, but allows users that has not passed verification.
 
 =back
 
-=head2 ssl_ca
+=head2 tls_ca
 
 Path to file that contains CA certificate. Used for peer verification.
 

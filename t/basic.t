@@ -35,8 +35,8 @@ subtest 'tls connection' => sub {
                 'Twiggy::TLS',
                 port     => $port,
                 host     => '127.0.0.1',
-                ssl_key  => $server_pem,
-                ssl_cert => $server_pem,
+                tls_key  => $server_pem,
+                tls_cert => $server_pem,
             );
 
             $server->run(

@@ -20,15 +20,15 @@ sub new {
     my %tls = (
         SSL_server => 1,
 
-        SSL_version     => $self->{ssl_version} || 'tlsv1',
-        SSL_cipher_list => $self->{ssl_ciphers} || 'HIGH:!aNULL:!MD5',
+        SSL_version     => $self->{tls_version} || 'sslv2/3',
+        SSL_cipher_list => $self->{tls_ciphers} || 'HIGH:!aNULL:!MD5',
 
-        SSL_key_file  => $self->{ssl_key},
-        SSL_cert_file => $self->{ssl_cert},
-        SSL_ca_file   => $self->{ssl_ca},
+        SSL_key_file  => $self->{tls_key},
+        SSL_cert_file => $self->{tls_cert},
+        SSL_ca_file   => $self->{tls_ca},
     );
 
-    if (my $verify = $self->{ssl_verify}) {
+    if (my $verify = $self->{tls_verify}) {
         if ($verify eq 'off') {
         }
         elsif ($verify eq 'on') {
@@ -38,7 +38,7 @@ sub new {
             $tls{SSL_verify_mode} = 0x01;
         }
         else {
-            Carp::croak qq(Invalid ssl_verify value "$verify");
+            Carp::croak qq(Invalid tls_verify value "$verify");
         }
     }
 
@@ -81,7 +81,7 @@ sub _accept_handler {
                 my ($sock, $error) = @_;
 
                 $self->{exit_guard}->end;
-                delete $self->{ssl_guard}->{$sock};
+                delete $self->{tls_guard}->{$sock};
                 $sock->close;
                 DEBUG && warn "$sock TLS/SSL error: $error\n";
             },
@@ -117,11 +117,11 @@ sub _run_app {
 sub _setup_tls {
     my ($self, $sock, $read, $cb) = @_;
 
-    $self->{ssl_guard}->{$sock} = AnyEvent->io(
+    $self->{tls_guard}->{$sock} = AnyEvent->io(
         fh   => $sock,
         poll => $read ? "r" : "w",
         cb   => sub {
-            delete $self->{ssl_guard}->{$sock};
+            delete $self->{tls_guard}->{$sock};
             if ($sock->accept_SSL) {
                 return $cb->();
             }
