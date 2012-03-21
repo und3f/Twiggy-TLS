@@ -17,8 +17,7 @@ Twiggy::TLS - Twiggy server with TLS support.
 
     twiggy --server Twiggy::TLS --tls-key key.pem --tls-cert cert.pem
 
-Other possible options are C<--tls-verify> and C<--tls-ca>. See L</ATTRIBUTES> for
-more details.
+See L</ATTRIBUTES> for more details.
 
     use Twiggy::Server::TLS;
 
@@ -57,11 +56,11 @@ The default is C<HIGH:!aNULL:!MD5>.
 
 =head2 tls_key
 
-Path to a file that contains server private key.
+Path to the server private key file.
 
 =head2 tls_cert
 
-Path to a file that contains server certificate.
+Path to the server certificate file.
 
 =head2 tls_verify
 
