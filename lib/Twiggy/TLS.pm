@@ -15,7 +15,7 @@ Twiggy::TLS - Twiggy server with TLS support.
 
 =head1 SYNOPSIS
 
-    plackup --server Twiggy::TLS --tls-key key.pem --tls-cert cert.pem
+    twiggy --server Twiggy::TLS --tls-key key.pem --tls-cert cert.pem
 
 Other possible options are C<--tls-verify> and C<--tls-ca>. See L</ATTRIBUTES> for
 more details.
