@@ -67,7 +67,7 @@ sub _accept_handler {
         my ($sock, $peer_host, $peer_port) = @_;
 
         DEBUG
-          && warn "$sock TLS/SSL connection accepted $peer_host:$peer_port\n";
+          && warn "$sock TLS connection accepted $peer_host:$peer_port\n";
         return unless $sock;
 
         $self->{exit_guard}->begin;
@@ -83,7 +83,7 @@ sub _accept_handler {
                 $self->{exit_guard}->end;
                 undef $tls_guard;
                 $sock->close;
-                DEBUG && warn "$sock TLS/SSL error: $error\n";
+                DEBUG && warn "$sock TLS error: $error\n";
             },
             SSL_reuse_ctx => $self->{_tls_context},
 
@@ -97,7 +97,7 @@ sub _accept_handler {
             sub {
                 $self->{exit_guard}->end;
 
-                DEBUG && warn "$sock TLS/SSL connection established\n";
+                DEBUG && warn "$sock TLS connection established\n";
                 $super->($sock, $peer_host, $peer_port);
             }
         );
