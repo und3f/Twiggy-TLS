@@ -8,9 +8,7 @@ use base 'Twiggy::Server';
 use IO::Socket::SSL;
 require Carp;
 
-use constant DEBUG     => $ENV{TWIGGY_DEBUG};
-use constant TLS_WRITE => IO::Socket::SSL::SSL_WANT_WRITE();
-use constant TLS_READ  => IO::Socket::SSL::SSL_WANT_READ();
+use constant DEBUG => $ENV{TWIGGY_DEBUG};
 
 sub new {
     my $class = shift;
@@ -32,10 +30,11 @@ sub new {
         if ($verify eq 'off') {
         }
         elsif ($verify eq 'on') {
-            $tls{SSL_verify_mode} = 0x03;
+            $tls{SSL_verify_mode} =
+              SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT;
         }
         elsif ($verify eq 'optional') {
-            $tls{SSL_verify_mode} = 0x01;
+            $tls{SSL_verify_mode} = SSL_VERIFY_PEER;
         }
         else {
             Carp::croak qq(Invalid tls_verify value "$verify");
@@ -73,7 +72,8 @@ sub _accept_handler {
 
         $self->{exit_guard}->begin;
 
-        my $ssl_sock = IO::Socket::SSL->start_SSL(
+        my $tls_guard;
+        IO::Socket::SSL->start_SSL(
             $sock,
             SSL_startHandshake => 0,
 
@@ -81,7 +81,7 @@ sub _accept_handler {
                 my ($sock, $error) = @_;
 
                 $self->{exit_guard}->end;
-                delete $self->{tls_guard}->{$sock};
+                undef $tls_guard;
                 $sock->close;
                 DEBUG && warn "$sock TLS/SSL error: $error\n";
             },
@@ -92,8 +92,8 @@ sub _accept_handler {
         );
 
         $self->_setup_tls(
-            $ssl_sock,
-            0,
+            $sock,
+            \$tls_guard,
             sub {
                 $self->{exit_guard}->end;
 
@@ -115,22 +115,29 @@ sub _run_app {
 }
 
 sub _setup_tls {
-    my ($self, $sock, $read, $cb) = @_;
+    my ($self, $sock, $guard, $cb) = @_;
 
-    $self->{tls_guard}->{$sock} = AnyEvent->io(
+    return $cb->() if $sock->accept_SSL;
+
+    my $error = $IO::Socket::SSL::SSL_ERROR;
+
+    my $poll;
+    if ($error == SSL_WANT_READ) {
+        $poll = 'r';
+    }
+    elsif ($error == SSL_WANT_WRITE) {
+        $poll = 'w';
+    }
+    else {
+        return;
+    }
+
+    $$guard = AnyEvent->io(
         fh   => $sock,
-        poll => $read ? "r" : "w",
+        poll => $poll,
         cb   => sub {
-            delete $self->{tls_guard}->{$sock};
-            if ($sock->accept_SSL) {
-                return $cb->();
-            }
-
-            my $error = $IO::Socket::SSL::SSL_ERROR;
-
-            return unless $error == TLS_READ || $error == TLS_WRITE;
-
-            $self->_setup_tls($sock, $error == TLS_READ, $cb);
+            undef $$guard;
+            $self->_setup_tls($sock, $guard, $cb);
         }
     );
 }
