@@ -120,22 +120,12 @@ sub _setup_tls {
     return $cb->() if $sock->accept_SSL;
 
     my $error = $IO::Socket::SSL::SSL_ERROR;
+    return unless $error == SSL_WANT_READ || $error == SSL_WANT_WRITE;
 
-    my $poll;
-    if ($error == SSL_WANT_READ) {
-        $poll = 'r';
-    }
-    elsif ($error == SSL_WANT_WRITE) {
-        $poll = 'w';
-    }
-    else {
-        return;
-    }
-
-    $$guard = AnyEvent->io(
-        fh   => $sock,
-        poll => $poll,
-        cb   => sub {
+    $$guard = AE::io(
+        $sock,
+        $error == SSL_WANT_WRITE,
+        sub {
             undef $$guard;
             $self->_setup_tls($sock, $guard, $cb);
         }
