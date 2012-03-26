@@ -17,10 +17,10 @@ sub new {
     my $self = $class->SUPER::new(@_);
 
     Carp::croak('missed required option "tls_key"')
-      unless exists $self->{tls_key};
+      unless $self->{tls_key};
 
     Carp::croak('missed required option "tls_cert"')
-      unless exists $self->{tls_cert};
+      unless $self->{tls_cert};
 
     my %tls = (
         SSL_server => 1,
