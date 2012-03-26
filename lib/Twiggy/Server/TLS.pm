@@ -16,15 +16,21 @@ sub new {
 
     my $self = $class->SUPER::new(@_);
 
+    Carp::croak('missed required option "tls_key"')
+      unless exists $self->{tls_key};
+
+    Carp::croak('missed required option "tls_cert"')
+      unless exists $self->{tls_cert};
+
     my %tls = (
         SSL_server => 1,
 
         SSL_version     => $self->{tls_version} || 'sslv2/3',
         SSL_cipher_list => $self->{tls_ciphers} || 'HIGH:!aNULL:!MD5',
 
-        SSL_key_file            => $self->{tls_key},
-        SSL_cert_file           => $self->{tls_cert},
-        SSL_ca_file             => $self->{tls_ca},
+        SSL_key_file  => $self->{tls_key},
+        SSL_cert_file => $self->{tls_cert},
+        SSL_ca_file   => $self->{tls_ca},
     );
 
     if (my $verify = $self->{tls_verify}) {
