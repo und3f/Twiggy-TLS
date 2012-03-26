@@ -63,8 +63,8 @@ Default. Disable peer verification.
 
 =item C<on>
 
-TLS connection information stored in the environment's C<psgi.tls> key, see
-L<Twiggy::TLS::Info>.
+Request peer certificate and verify it against CA. You can specify CA
+certificate with C<tls_ca> option.
 
 =item C<optional>
 
@@ -75,6 +75,11 @@ Same as C<on>, but allows users that has not passed verification.
 =head2 tls_ca
 
 Path to file that contains CA certificate. Used for peer verification.
+
+=head1 TLS INFORMATION
+
+TLS connection information stored in the environment key C<psgi.tls>, see
+L<Twiggy::TLS::Info>.
 
 =head1 DEBUGGING
 
