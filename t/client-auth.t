@@ -54,7 +54,7 @@ subtest 'tls connection' => sub {
                     return [
                         200,
                         ['Content-Type' => 'text/plain'],
-                        [shift->{HTTP_SSL_CLIENT_S_DN_CN}]
+                        [shift->{'psgi.tls'}->client_certificate('cn')]
                     ];
                 }
             );

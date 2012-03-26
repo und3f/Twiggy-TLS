@@ -6,6 +6,7 @@ use warnings;
 use base 'Twiggy::Server';
 
 use IO::Socket::SSL;
+use Twiggy::TLS::Info;
 require Carp;
 
 use constant DEBUG => $ENV{TWIGGY_DEBUG};
@@ -21,9 +22,9 @@ sub new {
         SSL_version     => $self->{tls_version} || 'sslv2/3',
         SSL_cipher_list => $self->{tls_ciphers} || 'HIGH:!aNULL:!MD5',
 
-        SSL_key_file  => $self->{tls_key},
-        SSL_cert_file => $self->{tls_cert},
-        SSL_ca_file   => $self->{tls_ca},
+        SSL_key_file            => $self->{tls_key},
+        SSL_cert_file           => $self->{tls_cert},
+        SSL_ca_file             => $self->{tls_ca},
     );
 
     if (my $verify = $self->{tls_verify}) {
@@ -108,8 +109,8 @@ sub _accept_handler {
 sub _run_app {
     my ($self, $app, $env, $sock) = @_;
 
-    $env->{'psgi.url_scheme'}         = 'https';
-    $env->{'HTTP_SSL_CLIENT_S_DN_CN'} = $sock->peer_certificate('cn');
+    $env->{'psgi.url_scheme'} = 'https';
+    $env->{'psgi.tls'}        = Twiggy::TLS::Info->new($sock);
 
     $self->SUPER::_run_app($app, $env, $sock);
 }

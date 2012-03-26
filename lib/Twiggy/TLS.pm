@@ -74,9 +74,8 @@ Default. Disable peer verification.
 
 =item C<on>
 
-Request peer certificate and verify it against CA. You can specify CA
-certificate with C<tls_ca> option. Client's certificate C<Common Name> field
-stored in C<$env-E<gt>{HTTP_SSL_CLIENT_S_DN_CN}>.
+TLS connection information stored in the environment's C<psgi.tls> key, see
+L<Twiggy::TLS::Info>.
 
 =item C<optional>
 
