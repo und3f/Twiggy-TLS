@@ -1,4 +1,7 @@
 Revision history for Perl extension Twiggy::TLS
 
+0.0011 Wed Mar 28 12:29:07 EEST 2012
+        - fixed manifest
+
 0.0010 Wed Mar 28 12:29:07 EEST 2012
         - original version
