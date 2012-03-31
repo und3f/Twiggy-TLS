@@ -1,5 +1,8 @@
 Revision history for Perl extension Twiggy::TLS
 
+0.0013 Sat Mar 31 16:12:03 EEST 2012
+        - minor fixups
+
 0.0012 Thu Mar 29 11:39:09 EEST 2012
         - verify_mode default value
 
