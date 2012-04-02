@@ -32,7 +32,7 @@ sub new {
         SSL_cert_file => $self->{tls_cert},
         SSL_ca_file   => $self->{tls_ca},
 
-        SSL_verify_mode => SSL_VERIFY_PEER,
+        SSL_verify_mode => SSL_VERIFY_NONE,
     );
 
     if (my $verify = $self->{tls_verify}) {
