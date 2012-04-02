@@ -9,8 +9,8 @@ requires 'IO::Socket::SSL' => '1.62';
 
 test_requires 'Test::More' => '0.88';
 test_requires 'Test::TCP';
-test_requires 'LWP::UserAgent' => '6.00';
-test_requires 'LWP::Protocol::https';
+test_requires 'LWP::UserAgent'       => '6.00';
+test_requires 'LWP::Protocol::https' => '6.02';
 test_requires 'FindBin';
 
 resources
