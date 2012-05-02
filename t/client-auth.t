@@ -8,7 +8,9 @@ use Test::TCP;
 use Plack::Loader;
 use LWP::UserAgent;
 use FindBin '$Bin';
+use Socket;
 
+my $host       = "localhost";
 my $ca_cert    = "$Bin/ca.pem";
 my $server_pem = "$Bin/server.pem";
 my $client_pem = "$Bin/client.pem";
@@ -28,11 +30,11 @@ subtest 'tls connection' => sub {
                     verify_hostname => 1,
                     SSL_ca_file     => $ca_cert,
 
-                    SSL_key_file    => $client_pem,
+                    SSL_key_file  => $client_pem,
                     SSL_cert_file => $client_pem,
                 }
             );
-            my $res = $ua->get("https://localhost:$port");
+            my $res = $ua->get("https://$host:$port");
             $success = $res->is_success or die $res->status_line;
 
             $content = $res->decoded_content;
@@ -41,8 +43,8 @@ subtest 'tls connection' => sub {
             my $port   = shift;
             my $server = Plack::Loader->load(
                 'Twiggy::TLS',
+                host       => inet_ntoa(inet_aton($host)),
                 port       => $port,
-                host       => '127.0.0.1',
                 tls_key    => $server_pem,
                 tls_cert   => $server_pem,
                 tls_ca     => $ca_cert,
