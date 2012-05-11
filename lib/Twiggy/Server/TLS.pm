@@ -25,7 +25,7 @@ sub new {
     my %tls = (
         SSL_server => 1,
 
-        SSL_version     => $self->{tls_version} || 'sslv2/3',
+        SSL_version     => $self->{tls_version} || 'SSLv23:!SSLv2',
         SSL_cipher_list => $self->{tls_ciphers} || 'HIGH:!aNULL:!MD5',
 
         SSL_key_file  => $self->{tls_key},
