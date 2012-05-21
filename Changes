@@ -1,5 +1,8 @@
 Revision history for Perl extension Twiggy::TLS
 
+0.0017 Mon May 21 11:26:15 UTC 2012
+        - increased test certificates size to fix tests problems
+
 0.0016 Fri May 11 10:35:00 UTC 2012
         - fixed SSL_version
         - fixed localhost address problem in tests
