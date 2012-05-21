@@ -15,7 +15,7 @@ my $ca_cert    = "$Bin/ca.pem";
 my $server_pem = "$Bin/server.pem";
 
 subtest 'tls connection' => sub {
-    my ($success, $content) = @_;
+    my ($success, $content);
 
     test_tcp(
         client => sub {

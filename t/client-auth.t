@@ -29,11 +29,11 @@ subtest 'tls connection' => sub {
                 ssl_opts => {
                     verify_hostname => 1,
                     SSL_ca_file     => $ca_cert,
-
                     SSL_key_file  => $client_pem,
                     SSL_cert_file => $client_pem,
                 }
             );
+
             my $res = $ua->get("https://$host:$port");
             $success = $res->is_success or die $res->status_line;
 
