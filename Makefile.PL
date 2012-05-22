@@ -13,8 +13,7 @@ test_requires 'LWP::UserAgent'       => '6.00';
 test_requires 'LWP::Protocol::https' => '6.02';
 test_requires 'FindBin';
 
-resources
-  bugtracker => 'https://github.com/und3f/Twiggy-TLS/issues',
-  repository => 'https://github.com/und3f/Twiggy-TLS';
+bugtracker 'https://github.com/und3f/Twiggy-TLS/issues';
+repository 'https://github.com/und3f/Twiggy-TLS';
 
 WriteAll;
