@@ -84,6 +84,7 @@ sub _accept_handler {
         my $tls_guard;
         IO::Socket::SSL->start_SSL(
             $sock,
+            SSL_server         => 1,
             SSL_startHandshake => 0,
 
             SSL_error_trap => sub {
