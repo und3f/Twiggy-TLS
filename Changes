@@ -1,5 +1,8 @@
 Revision history for Perl extension Twiggy::TLS
 
+0.0018 Sun Jan 27 08:33:47 UTC 2013
+        - fixed io-socket-ssl warning
+
 0.0017 Mon May 21 11:26:15 UTC 2012
         - increased test certificates size to fix tests problems
 
